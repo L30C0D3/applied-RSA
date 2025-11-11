@@ -17,7 +17,7 @@
 
 unsigned int *dec_to_bin(const mpz_t dec_number, size_t *bit_size);
 mpz_t *Consecutive(const mpz_t n, size_t *arr_size);
-mpz_t *Sieve(mpz_t n, size_t *prime_count);
+mpz_t *Sieve(mpz_t n, size_t *L_size);
 void TrialDivision(const mpz_t n, mpz_t *primes, size_t prime_count, mpz_t ***factors, size_t *factor_count);
 void FreeFactorMatrix(mpz_t **matrix, size_t count);
 

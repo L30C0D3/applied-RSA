@@ -12,6 +12,7 @@ unsigned int *dec_to_bin(const mpz_t dec_number, size_t *bit_size)
 {
     mpz_t temp; // Copy of dec_number for its manipulation
     unsigned int *binary_array; // Array with dec_numbers's binary representation
+    size_t i;
 
     mpz_init(temp);
     mpz_set(temp, dec_number);
@@ -25,7 +26,7 @@ unsigned int *dec_to_bin(const mpz_t dec_number, size_t *bit_size)
         exit(EXIT_FAILURE);
     }
  
-    for(size_t i = 0; i < *bit_size; i++)
+    for(i = 0; i < *bit_size; i++)
     {
         binary_array[*bit_size-i-1] = mpz_tstbit(temp, i);
     }
@@ -40,6 +41,7 @@ mpz_t *Consecutive(const mpz_t n, size_t *arr_size)
 {
     mpz_t *consecutive; // Array with consecutive numbers
     mpz_t current; // Variable that carries the consecutive values
+    size_t i;
 
     *arr_size = mpz_get_ui(n) - 1;
 
@@ -53,7 +55,7 @@ mpz_t *Consecutive(const mpz_t n, size_t *arr_size)
 
     mpz_init_set_ui(current, 2);
 
-    for(size_t i = 0; i < *arr_size; i++)
+    for(i = 0; i < *arr_size; i++)
     {
         mpz_init(consecutive[i]);
         mpz_set(consecutive[i], current);
@@ -65,10 +67,55 @@ mpz_t *Consecutive(const mpz_t n, size_t *arr_size)
     return consecutive;
 }
 
-// Sieve of eratosthenes. Given an array with consecutive numbers, returns an array P with prime numbers
-mpz_t *Sieve(mpz_t n, size_t *prime_count)
+// Sieve of Eratosthenes. Given an array with consecutive numbers, returns an array P with prime numbers
+mpz_t *Sieve(mpz_t n, size_t *L_size)
 {
+    mpz_t *P; // Array P with consecutive numbers from 2 to n
+    mpz_t *L; // Array L with prime numbers
+    size_t P_size, max_P_size, i, j;
 
+    P = Consecutive(n, &P_size);
+    *L_size = 0;
+
+    // Process of marking multiples of P[i]
+    for(i = 0; i < P_size; i++)
+    {
+        if(mpz_cmp_ui(P[i], 0) != 0)
+        {
+            j = mpz_get_ui(P[i]) * mpz_get_ui(P[i]) - 2; // We substract 2 from p^2 because P starts from 2, so it is 2 units ahead of i
+
+            while(j < P_size)
+            {
+                mpz_set_ui(P[j], 0);
+                j = j + mpz_get_ui(P[i]);
+            }
+
+            (*L_size)++; // This allows us to count the prime numbers in P
+        }
+    }
+
+    L = (mpz_t *) calloc(*L_size, sizeof(mpz_t));
+
+    // Process of copying prime numbers from P to L
+    j = 0;
+    for(i = 0; i < P_size; i++)
+    {
+        if(mpz_cmp_ui(P[i], 0) != 0)
+        {
+            mpz_init(L[j]);
+            mpz_set(L[j], P[i]);
+            j++;
+        }
+    }
+
+    // Free up memory from P
+    for(i = 0; i < P_size; i++)
+    {
+        mpz_clear(P[i]);
+    }
+    free(P);
+
+    return L;
 }
 
 // Calculates the prime factors and its exponents given a number n using the trial division
@@ -148,5 +195,5 @@ void Factorize(mpz_t n)
 // Calculates Euler's phi function
 void phi_euler(mpz_t m)
 {
-
+    
 }
