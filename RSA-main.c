@@ -28,9 +28,7 @@ void freeArray(mpz_t *arr, size_t arr_size)
 
 int main(int argc, char **argv)
 {
-    mpz_t n, *consecutive, *L;
-    size_t cons_size, L_size;
-
+    mpz_t n, phi_result;
     /*
     if(argc != 3)
     {
@@ -39,21 +37,18 @@ int main(int argc, char **argv)
     */
 
     mpz_init(n);
+    mpz_init(phi_result);
+
+    // 2. Pedir el número al usuario
+    gmp_printf("Introduce un número para calcular phi(n): ");
     gmp_scanf("%Zd", n);
 
-    consecutive = Consecutive(n, &cons_size);
-    L = Sieve(n, &L_size);
+    phi_euler(n, phi_result);
 
-    printf("\n");
-    printArray(consecutive, cons_size);
-    printf("\n");
-    printArray(L, L_size);
+    gmp_printf("\nphi(%Zd) = %Zd\n", n, phi_result);
 
-    freeArray(consecutive, cons_size);
-    freeArray(L, L_size);
-
-    free(consecutive);
-    free(L);
-
+    mpz_clear(n);
+    mpz_clear(phi_result);
+    
     return 0;
 }
